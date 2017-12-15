@@ -78,7 +78,7 @@
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 ;; Tell Emacs where to look for packages
-(let ((default-directory "~/.emacs.d/ioopm-packages/"))
+(let ((default-directory "~/.emacs.d/custom-packages/"))
   (normal-top-level-add-subdirs-to-load-path))
 
 (let ((default-directory "~/.emacs.d/elpa/"))
