@@ -157,11 +157,15 @@
 
 ;; Auto complete mode
 ;; Always suggest completions.
-;(require 'popup)
-;(require 'auto-complete)
-;(global-set-key (kbd "C-<return>")
-;		(lambda () (interactive)
-;		  (progn (auto-complete-mode 1) (auto-complete))))
+(use-package auto-complete-config
+  :ensure auto-complete
+  :bind ("M-<tab>" . my--auto-complete)
+  :init
+  (defun my--auto-complete ()
+    (interactive)
+    (unless (boundp 'auto-complete-mode)
+      (global-auto-complete-mode 1))
+    (auto-complete)))
 
 ;; Visual Regexp
 ;; Replace normal query-replace with a better one
@@ -285,7 +289,18 @@
 (use-package elpy
   :ensure t
   :init
-  (elpy-enable))
+  (elpy-enable)
+  (setq elpy-rpc-python-command "python3"))
+
+;; Use backend jedi for autocomplete
+(use-package company-jedi
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-jedi))
+
+(use-package pyvenv
+  :ensure t
+  :hook ((python-mode . pyvenv-mode)))
 
 ;; ********************************************************
 ;; Keybindings
@@ -308,7 +323,7 @@
     ("a37d20710ab581792b7c9f8a075fcbb775d4ffa6c8bce9137c84951b1b453016" default)))
  '(package-selected-packages
    (quote
-    (elpy use-package hc-zenburn-theme smex visual-regexp flycheck yasnippet seq dash ace-window))))
+    (auto-complete elpy use-package hc-zenburn-theme smex visual-regexp flycheck yasnippet seq dash ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
