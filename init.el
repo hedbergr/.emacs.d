@@ -1,31 +1,10 @@
-;; This is the official Emacs init file for the course IOOPM. It
-;; uses English, not because anyone thinks it's cooler than
-;; Swedish, but to avoid encoding problems with using Swedish
-;; characters. Put it in `~/.emacs.d/init.el` to use it for your
-;; own Emacs. You can use as many or as few of these settings as
-;; you would like. Experiment and try to find a set-up that suits
-;; you!
-;;
-;; Some settings in this file are commented out. They are the ones
-;; that require some choice of parameter (such as a color) or that
-;; might be considered more intrusive than other settings (such as
-;; linum-mode).
-;;
-;; Whenever you come across something that looks like this
-;;
-;;    (global-set-key (kbd "C-e") 'move-end-of-line)
-;;
-;; it is a command that sets the keyboard shortcut for some
-;; function. If you find a function that you like, whose keyboard
-;; shortcut you don't like, you can (and should!) always change it to
-;; something that you do like.
+;;; Init.el1
 
-;; ===========
+;; ********************************************************
 ;; Appearance
-;; ===========
+;; --------------------------------------------------------
 
-
-;; Disable the menu bar
+;; Disable the menu bas
 (if (fboundp 'menu-bar-mode)
     (menu-bar-mode -1))
 
@@ -46,39 +25,25 @@
 (setq default-major-mode 'text-mode)
 
 ;; Show time using Swedish format
-(setq display-time-day-and-date t
+(setq display-time-day-and-format t
       display-time-24hr-format t)
 (display-time)
 
-;; Set which colors to use
-;; You can see a list of all the available colors by checking the
-;; variable "color-name-rgb-alist" (Type "C-h v color-name-rgb-alist
-;; <RET>"). Most normal color names work, like black, white, red,
-;; green, blue, etc.
-; (set-background-color "black")
-; (set-foreground-color "white")
-; (set-cursor-color "white")
-
 ;; Set a custom color theme
-;; You can also try using a custom theme, which changes more colors
-;; than just the three above. For a list of all available themes,
-;; press "M-x customize-themes <RET>". You can also use a theme in
-;; combination with the above set-color-commands.
-;;(if display-graphic-p
-;;    (progn
-;;     (load-theme 'wombat)))
+;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+;(load-theme 'wombat t)
 
-;; =========
+;; ********************************************************
 ;; Packages
-;; =========
+;; --------------------------------------------------------
 
 ;; Use more package-archives (M-x list-packages)
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+			                   ("marmalade" . "https://marmalade-repo.org/packages/")
+			                   ("melpa" . "https://melpa.org/packages/")))
 
 ;; Tell Emacs where to look for packages
-(let ((default-directory "~/.emacs.d/custom-packages/"))
+(let ((default-directoy "~/.emacs.d/custom-packages/"))
   (normal-top-level-add-subdirs-to-load-path))
 
 (let ((default-directory "~/.emacs.d/elpa/"))
@@ -87,12 +52,11 @@
 (require 'package)
 (package-initialize)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/path/to/atom-one-dark-theme/")
-(load-theme 'atom-one-dark t)
+(load-theme 'hc-zenburn)
 
-;; ===========
+;; ********************************************************
 ;; Navigation
-;; ===========
+;; --------------------------------------------------------
 
 ;; Show both line and column number in the bottom of the buffer
 (column-number-mode t)
@@ -104,7 +68,7 @@
 ; (global-linum-mode t)
 
 ;; Sentences are not followed by two spaces
-;; Makes navigating with M-e and M-a (forward/backward senctence)
+;; Makes navigating with M-e  and M-a (forward/backward sentence)
 ;; behave like you would expect
 (setq sentence-end-double-space nil)
 
@@ -135,15 +99,17 @@
 (setq imenu-auto-rescan t)
 (global-set-key (kbd "C-.") 'imenu-anywhere)
 
-;; ===========
+;; ********************************************************
 ;; Editing
-;; ===========
+;; --------------------------------------------------------
 
 ;; Allow deletion of selected text with <DEL>
 (delete-selection-mode 1)
 
 ;; Use multiple spaces instead of tab characters
 (setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+(setq-default fill-column 66)
 
 ;; hippie-expand instead of dabbrev-expand
 ;; dabbrev-expand will try to expand the word under the cursor by
@@ -160,24 +126,24 @@
 
 ;; Expand from everything!
 (setq hippie-expand-try-functions-list
-  '(try-expand-dabbrev
-    try-expand-dabbrev-all-buffers
-    try-complete-file-name-partially
-    try-complete-file-name
-    try-expand-all-abbrevs
-    try-expand-list
-    try-expand-dabbrev-from-kill
-    try-expand-line
-    try-complete-lisp-symbol-partially
-    try-complete-lisp-symbol))
+      '(try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-complete-file-name-partially
+        try-complete-file-name
+        try-expand-all-abbrevs
+        try-expand-list
+        try-expand-dabbrev-from-kill
+        try-expand-line
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol))
 
 ;; Auto complete mode
 ;; Always suggest completions.
-; (require 'popup)
-; (require 'auto-complete)
-; (global-set-key (kbd "C-<return>")
-;                 (lambda () (interactive)
-;                   (progn (auto-complete-mode 1) (auto-complete))))
+;(require 'popup)
+;(require 'auto-complete)
+;(global-set-key (kbd "C-<return>")
+;		(lambda () (interactive)
+;		  (progn (auto-complete-mode 1) (auto-complete))))
 
 ;; Visual Regexp
 ;; Replace normal query-replace with a better one
@@ -186,22 +152,16 @@
 
 ;; Multiple cursors
 ;; What it sounds like
-(require 'multiple-cursors)
-
-;; Suggested bindings
-; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-; (global-set-key (kbd "C-M-c") 'mc/edit-lines)
+;(require 'multiple-cursors)
 
 ;; Expand region
 ;; Select the thing I'm currently inside
 (require 'expand-region)
 (global-set-key (kbd "M-h") 'er/expand-region)
 
-;; ==========
+;; ********************************************************
 ;; Interface
-;; ==========
+;; --------------------------------------------------------
 
 ;; ido mode
 ;; Automatic auto-complete for many things, including opening files.
@@ -221,7 +181,7 @@
 
 ;; Save-place
 ;; Remember the cursor position when you close a file, so that you
-;; start with the cursor in the same position when opening it again
+;; start  with the cursor in the same position when opening it again
 (setq save-place-file "~/.emacs.d/saveplace")
 (setq-default save-place t)
 (require 'saveplace)
@@ -231,10 +191,10 @@
 ;; know you are opening a file that you have edited recently, this
 ;; should be faster than using find-file ("C-x C-f"). The code below
 ;; binds this to the keyboard shortcut "C-x C-r", which replaces the
-;; shortcut for the command find-file-read-only.
+;; shortcut for the command find-file-read-only
 (require 'recentf)
 (recentf-mode 1)
-(setq recentf-max-menu-items 25)
+(setq recentf-max-meny-items 25)
 
 (defun recentf-ido-find-file ()
   "Find a recent file using Ido."
@@ -245,12 +205,11 @@
 
 (global-set-key "\C-x\C-r" 'recentf-ido-find-file)
 
-
-;; ============
+;; ********************************************************
 ;; Programming
-;; ============
+;; --------------------------------------------------------
 
-;; Flycheck
+;; Flycheck (2020-12-28)
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
@@ -268,7 +227,33 @@
               (local-set-key (kbd "C-c C-p")
                              'previous-error))))
 
-;; Display flymake errors in minibuffer
+
+;; YASnippet
+;; Expand e.g. "for<tab>" to "for(int i = 0; i < N; i++) {}"
+(require  'yasnippet)
+(yas-global-mode 1)
+
+
+;; ********************************************************
+;; Python
+;; --------------------------------------------------------
+
+(use-package elpy
+             :ensure t
+             :init
+             (elpy-enable))
+
+;; ********************************************************
+;; Keybindings
+;; --------------------------------------------------------
+
+
+
+;; ********************************************************
+;; Custom
+;; --------------------------------------------------------
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -276,14 +261,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("54ece5659cc7acdcd529dddd78675c2972a5ac69260af4a6aec517dcea16208b" default)))
- '(help-at-pt-display-when-idle (quote (flymake-overlay)) nil (help-at-pt))
- '(help-at-pt-timer-delay 0.2))
-
-;; YASnippets
-;; Expand e.g. "for<tab>" to "for(int i = 0; i < N; i++) {}"
-(require 'yasnippet)
-(yas-global-mode 1)
+    ("a37d20710ab581792b7c9f8a075fcbb775d4ffa6c8bce9137c84951b1b453016" default)))
+ '(package-selected-packages
+   (quote
+    (elpy use-package hc-zenburn-theme smex visual-regexp flycheck yasnippet seq dash ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
