@@ -19,8 +19,14 @@
 (require 'package)
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
-    (package-install 'use-package))
+;; Fetch the list of package available
+(unless package-archive-contents
+  (package-refresh-contents))
+
+;; Install use-package
+(dolist (package '(use-package))
+  (unless (package-installed-p package)
+    (package-install package)))
 
 ;; ********************************************************
 ;; Appearance
