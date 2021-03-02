@@ -1,46 +1,13 @@
-;;; Init.el1
-
-;; ********************************************************
-;; Appearance
-;; --------------------------------------------------------
-
-;; Disable the menu bas
-(if (fboundp 'menu-bar-mode)
-    (menu-bar-mode -1))
-
-;; Disable the tool bar
-(if (fboundp 'tool-bar-mode)
-    (tool-bar-mode -1))
-
-;; Disable the scroll bar
-(if (fboundp 'scroll-bar-mode)
-    (scroll-bar-mode -1))
-
-;; Turn off annoying splash screen
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-echo-area-message t)
-(setq inhibit-startup-message t)
-
-;; When in doubt, use text-mode
-(setq default-major-mode 'text-mode)
-
-;; Show time using Swedish format
-(setq display-time-day-and-format t
-      display-time-24hr-format t)
-(display-time)
-
-;; Set a custom color theme
-;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-;(load-theme 'wombat t)
+;;; Init.el
 
 ;; ********************************************************
 ;; Packages
 ;; --------------------------------------------------------
 
 ;; Use more package-archives (M-x list-packages)
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-			                   ("marmalade" . "https://marmalade-repo.org/packages/")
-			                   ("melpa" . "https://melpa.org/packages/")))
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/")
+			 ("marmalade" . "https://marmalade-repo.org/packages/")
+			 ("melpa" . "https://melpa.org/packages/")))
 
 ;; Tell Emacs where to look for packages
 (let ((default-directoy "~/.emacs.d/custom-packages/"))
@@ -52,7 +19,47 @@
 (require 'package)
 (package-initialize)
 
-(load-theme 'hc-zenburn)
+(unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+
+;; ********************************************************
+;; Appearance
+;; --------------------------------------------------------
+
+;; Disable the menu bar
+(if (fboundp 'menu-bar-mode)
+    (menu-bar-mode -1))
+
+;; Disable the tool bar
+(if (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+
+;; Disable the scroll bar
+(if (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+
+;; Turn off splash screen
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-echo-area-message t)
+(setq inhibit-startup-message t)
+
+;; Use the entire screen
+(setq scroll-margin 0)
+
+;; When in doubt, use text-mode
+(setq default-major-mode 'text-mode)
+
+;; Show time using Swedish format
+(setq display-time-day-and-format t
+      display-time-24hr-format t)
+(display-time)
+
+(use-package hc-zenburn-theme
+  :ensure t
+  :init
+  (setq hc-zenburn t)
+  :config
+  (load-theme 'hc-zenburn t))
 
 ;; ********************************************************
 ;; Navigation
@@ -84,15 +91,20 @@
 
 ;; Avy mode
 ;; Jump anywhere on screen in four keystrokes or less.
-(require 'avy)
-(define-key global-map (kbd "C-j") 'avy-goto-word-or-subword-1)
-(define-key global-map (kbd "C-M-j") 'avy-goto-char)
-(define-key global-map (kbd "C-M-l") 'avy-goto-char)
+(use-package avy
+	 :ensure t
+	 :bind (("C-j" . avy-goto-word-or-subword-1)
+		("C-M-j" . avy-goto-char)
+		("C-M-l" . avy-goto-char))
+	 :config
+	 (setq avy-background t))
 
 ;; Ace window
 ;; Select which window to switch to, rather than shuffling through them all
-(require 'ace-window)
-;(global-set-key (kbd "C-x o") 'ace-window)
+;(use-package ace-window
+;  :ensure t
+; :config
+; (global-set-key (kbd "C-x o") 'ace-window))
 
 ;; imenu
 ;; Language-aware navigation
@@ -147,8 +159,10 @@
 
 ;; Visual Regexp
 ;; Replace normal query-replace with a better one
-(require 'visual-regexp)
-(global-set-key "\M-%" 'vr/query-replace)
+(use-package visual-regexp
+  :ensure
+  :bind ("\M-%" . vr/query-replace))
+
 
 ;; Multiple cursors
 ;; What it sounds like
@@ -156,12 +170,29 @@
 
 ;; Expand region
 ;; Select the thing I'm currently inside
-(require 'expand-region)
-(global-set-key (kbd "M-h") 'er/expand-region)
+(use-package expand-region
+  :ensure
+  :bind ("M-h" . er/expand-region))
+
 
 ;; ********************************************************
 ;; Interface
 ;; --------------------------------------------------------
+
+;; Setup GitGutter+
+(use-package git-gutter+
+  :config
+  (progn
+    (when (not (equal (window-system) nil))
+      (require 'git-gutter-fringe+))
+    (global-git-gutter+-mode t)
+    (setq git-gutter+-hide-gutter t))
+  :diminish git-gutter+
+  :bind
+  (("C-x g t" . git-gutter+-mode)
+   ("C-x g n" . git-gutter+-next-hunk)
+   ("C-x g p" . git-gutter+-previous-hunk)
+      ("C-x g v" . git-gutter+-revert-hunk)))
 
 ;; ido mode
 ;; Automatic auto-complete for many things, including opening files.
@@ -171,13 +202,15 @@
 (setq ido-auto-merge-delay-time 9999)
 
 ;; smex
-;; M-x on steroids
-(require 'smex)
-(global-set-key "\M-x" 'smex)
-
+;; Fuzzy matching for M-x
+(use-package smex
+  :ensure t
+  :bind (("M-x" . smex)
+         ("M-X" . execute-extended-command)))
+  
 ;; Uniquify buffernames
 ;; Give better names to buffers of same name
-(require 'uniquify)
+(use-package uniquify)
 
 ;; Save-place
 ;; Remember the cursor position when you close a file, so that you
@@ -192,8 +225,10 @@
 ;; should be faster than using find-file ("C-x C-f"). The code below
 ;; binds this to the keyboard shortcut "C-x C-r", which replaces the
 ;; shortcut for the command find-file-read-only
-(require 'recentf)
-(recentf-mode 1)
+(use-package recentf
+  :config
+  (recentf-mode 1))
+
 (setq recentf-max-meny-items 25)
 
 (defun recentf-ido-find-file ()
@@ -210,8 +245,11 @@
 ;; --------------------------------------------------------
 
 ;; Flycheck (2020-12-28)
-(require 'flycheck)
-(add-hook 'after-init-hook #'global-flycheck-mode)
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+
 
 ;; Key binding for finding next error
 (dolist (hook '(prog-mode-hook))
@@ -230,18 +268,18 @@
 
 ;; YASnippet
 ;; Expand e.g. "for<tab>" to "for(int i = 0; i < N; i++) {}"
-(require  'yasnippet)
-(yas-global-mode 1)
-
+(use-package  yasnippet
+  :ensure t
+  :config (yas-global-mode 1))
 
 ;; ********************************************************
 ;; Python
 ;; --------------------------------------------------------
 
 (use-package elpy
-             :ensure t
-             :init
-             (elpy-enable))
+  :ensure t
+  :init
+  (elpy-enable))
 
 ;; ********************************************************
 ;; Keybindings
