@@ -1,1 +1,3 @@
-Add packages and init.el to /.emacs.d/
+# Emacs config
+
+This repo contains my Emacs configuration. 
