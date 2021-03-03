@@ -107,10 +107,10 @@
 
 ;; Ace window
 ;; Select which window to switch to, rather than shuffling through them all
-;(use-package ace-window
-;  :ensure t
-; :config
-; (global-set-key (kbd "C-x o") 'ace-window))
+(use-package ace-window
+  :ensure t
+  :config
+  (global-set-key (kbd "C-x o") 'ace-window))
 
 ;; imenu
 ;; Language-aware navigation
@@ -157,6 +157,9 @@
 
 ;; Auto complete mode
 ;; Always suggest completions.
+(use-package auto-complete
+  :ensure t)
+
 (use-package auto-complete-config
   :ensure auto-complete
   :bind ("M-<tab>" . my--auto-complete)
