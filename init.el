@@ -114,8 +114,11 @@
 
 ;; imenu
 ;; Language-aware navigation
-(setq imenu-auto-rescan t)
-(global-set-key (kbd "C-.") 'imenu-anywhere)
+(use-package imenu
+  :config
+  (setq imenu-auto-rescan t)
+  :bind
+  (("M-i" . idomenu)))
 
 ;; ********************************************************
 ;; Editing
@@ -176,7 +179,6 @@
   :ensure
   :bind ("\M-%" . vr/query-replace))
 
-
 ;; Multiple cursors
 ;; What it sounds like
 ;(require 'multiple-cursors)
@@ -186,7 +188,6 @@
 (use-package expand-region
   :ensure
   :bind ("M-h" . er/expand-region))
-
 
 ;; ********************************************************
 ;; Interface
@@ -205,11 +206,21 @@
   (("C-x g t" . git-gutter+-mode)
    ("C-x g n" . git-gutter+-next-hunk)
    ("C-x g p" . git-gutter+-previous-hunk)
-      ("C-x g v" . git-gutter+-revert-hunk)))
+   ("C-x g v" . git-gutter+-revert-hunk)))
 
 ;; ido mode
 ;; Automatic auto-complete for many things, including opening files.
-(ido-mode)
+(use-package ido
+  :config
+  (ido-mode t)
+  (ido-everywhere 1)
+  (setq ido-enable-prefix nil
+        ido-enable-flex-matching t
+        ido-case-fold nil
+        ido-auto-merge-work-directories-length -1
+        ido-create-new-buffer 'always
+        ido-use-filename-at-point nil
+        ido-max-prospects 10))
 
 ;; Don't automatically select things though...
 (setq ido-auto-merge-delay-time 9999)
@@ -263,7 +274,6 @@
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
-
 ;; Key binding for finding next error
 (dolist (hook '(prog-mode-hook))
   (add-hook hook
@@ -278,12 +288,41 @@
               (local-set-key (kbd "C-c C-p")
                              'previous-error))))
 
-
 ;; YASnippet
 ;; Expand e.g. "for<tab>" to "for(int i = 0; i < N; i++) {}"
 (use-package  yasnippet
   :ensure t
   :config (yas-global-mode 1))
+
+;; ********************************************************
+;; C
+;; --------------------------------------------------------
+
+;; Settings for C
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (progn
+              (setq comment-start "//")
+              (setq comment-end "")
+              (global-company-mode)
+              (flycheck-mode t)
+              )))
+
+;; Trying out irony-mode (2017-10-10)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-irony))
+
+(use-package flycheck-rtags
+  :ensure t)
+
+;; Highlight dangerous C functions
+(add-hook 'c-mode-hook
+          (lambda ()
+            (font-lock-add-keywards nil
+                                    '(("\\<\\(malloc\\|calloc\\|free\\|realloc\\)\\>"
+                                       . font-lock-warning-face)))))
 
 ;; ********************************************************
 ;; Python
@@ -306,15 +345,8 @@
   :hook ((python-mode . pyvenv-mode)))
 
 ;; ********************************************************
-;; Keybindings
-;; --------------------------------------------------------
-
-
-
-;; ********************************************************
 ;; Custom
 ;; --------------------------------------------------------
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -326,7 +358,7 @@
     ("a37d20710ab581792b7c9f8a075fcbb775d4ffa6c8bce9137c84951b1b453016" default)))
  '(package-selected-packages
    (quote
-    (auto-complete elpy use-package hc-zenburn-theme smex visual-regexp flycheck yasnippet seq dash ace-window))))
+    (flycheck-rtags auto-complete elpy use-package hc-zenburn-theme smex visual-regexp flycheck yasnippet seq dash ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
