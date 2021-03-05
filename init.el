@@ -1,4 +1,8 @@
-;;; Init.el
+;;; init.el --- Initialization file for Emacs
+;;; Commentary:
+;;  Emacs Startup File --- initialization for Emacs
+
+;;; Code:
 
 ;; ********************************************************
 ;; Packages
@@ -53,7 +57,7 @@
 (setq scroll-margin 0)
 
 ;; When in doubt, use text-mode
-(setq default-major-mode 'text-mode)
+(setq major-mode 'text-mode)
 
 ;; Show time using Swedish format
 (setq display-time-day-and-format t
@@ -116,6 +120,7 @@
 ;; imenu
 ;; Language-aware navigation
 (use-package imenu
+  :ensure t
   :config
   (setq imenu-auto-rescan t)
   :bind
@@ -177,21 +182,25 @@
 ;; Visual Regexp
 ;; Replace normal query-replace with a better one
 (use-package visual-regexp
-  :ensure
+  :ensure t
   :bind ("\M-%" . vr/query-replace))
 
 ;; Expand region
 ;; Select the thing I'm currently inside
 (use-package expand-region
-  :ensure
+  :ensure t
   :bind ("M-h" . er/expand-region))
 
 ;; ********************************************************
 ;; Interface
 ;; --------------------------------------------------------
 
+(use-package git-gutter-fringe+
+  :ensure t)
+
 ;; Setup GitGutter+
 (use-package git-gutter+
+  :ensure t
   :config
   (progn
     (when (not (equal (window-system) nil))
@@ -237,6 +246,7 @@
 ;; Remember the cursor position when you close a file, so that you
 ;; start with the cursor in the same position when opening it again
 (use-package saveplace
+  :ensure t
   :init (save-place-mode))
 
 ;; Recent files
@@ -246,6 +256,7 @@
 ;; binds this to the keyboard shortcut "C-x C-r", which replaces the
 ;; shortcut for the command find-file-read-only
 (use-package recentf
+  :ensure t
   :config
   (recentf-mode t))
 
@@ -276,6 +287,7 @@
 ;; Flycheck (2020-12-28)
 (use-package flycheck
   :ensure t
+  ;:init
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
@@ -295,8 +307,8 @@
 
 ;; YASnippet
 ;; Expand e.g. "for<tab>" to "for(int i = 0; i < N; i++) {}"
-(use-package  yasnippet)
-  ;:ensure t)
+(use-package  yasnippet
+  :ensure t)
   ;:config (yas-global-mode 1))
 
 ;; ********************************************************
@@ -352,17 +364,5 @@
 ;; ********************************************************
 ;; Custom
 ;; --------------------------------------------------------
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (visual-regexp use-package smex hc-zenburn-theme flycheck-rtags expand-region elpy company-jedi auto-complete ace-window))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;;; init.el ends here
