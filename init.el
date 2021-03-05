@@ -78,7 +78,8 @@
 (show-paren-mode t)
 
 ;; Show line numbers to the left of all buffers
-; (global-linum-mode t)
+(global-linum-mode t)
+(setq linum-format "%d ")
 
 ;; Sentences are not followed by two spaces
 ;; Makes navigating with M-e  and M-a (forward/backward sentence)
@@ -179,10 +180,6 @@
   :ensure
   :bind ("\M-%" . vr/query-replace))
 
-;; Multiple cursors
-;; What it sounds like
-;(require 'multiple-cursors)
-
 ;; Expand region
 ;; Select the thing I'm currently inside
 (use-package expand-region
@@ -238,10 +235,9 @@
 
 ;; Save-place
 ;; Remember the cursor position when you close a file, so that you
-;; start  with the cursor in the same position when opening it again
-(setq save-place-file "~/.emacs.d/saveplace")
-(setq-default save-place t)
-(require 'saveplace)
+;; start with the cursor in the same position when opening it again
+(use-package saveplace
+  :init (save-place-mode))
 
 ;; Recent files
 ;; Enable a command to list your most recently edited files. If you
@@ -251,28 +247,37 @@
 ;; shortcut for the command find-file-read-only
 (use-package recentf
   :config
-  (recentf-mode 1))
+  (recentf-mode t))
 
 (setq recentf-max-meny-items 25)
+;(setq recentf-max-saved-items 50)
 
-(defun recentf-ido-find-file ()
-  "Find a recent file using Ido."
+;(defun recentf-ido-find-file ()
+;  "Find a recent file using Ido."
+;  (interactive)
+;  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+;    (when file
+;      (find-file file))))
+
+(defun ido-recentf-open ()
+  "Use `ido-completing-read' to \\[find-file] a recent file."
   (interactive)
-  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-    (when file
-      (find-file file))))
+  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+      (message "Opening file...")
+        (message "Aborting")))
 
-(global-set-key "\C-x\C-r" 'recentf-ido-find-file)
+;(global-set-key "\C-x\C-r" 'recentf-ido-find-file)
+(global-set-key (kbd "C-x C-r") 'ido-recentf-open)
 
 ;; ********************************************************
 ;; Programming
 ;; --------------------------------------------------------
 
 ;; Flycheck (2020-12-28)
-;(use-package flycheck
-;  :ensure t
-;  :config
-;  (add-hook 'after-init-hook #'global-flycheck-mode))
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 
 ;; Key binding for finding next error
 (dolist (hook '(prog-mode-hook))
@@ -290,9 +295,9 @@
 
 ;; YASnippet
 ;; Expand e.g. "for<tab>" to "for(int i = 0; i < N; i++) {}"
-(use-package  yasnippet
-  :ensure t
-  :config (yas-global-mode 1))
+(use-package  yasnippet)
+  ;:ensure t)
+  ;:config (yas-global-mode 1))
 
 ;; ********************************************************
 ;; C
@@ -305,7 +310,7 @@
               (setq comment-start "//")
               (setq comment-end "")
               (global-company-mode)
-              ; (flycheck-mode t)
+              (flycheck-mode t)
               )))
 
 ;; Trying out irony-mode (2017-10-10)
@@ -314,10 +319,10 @@
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-irony))
 
-(use-package flycheck-rtags
-  :ensure t)
+;(use-package flycheck-rtags
+;  :ensure t)
 
-;; Highlight dangerous C functions
+; Highlight dangerous C functions
 (add-hook 'c-mode-hook
           (lambda ()
             (font-lock-add-keywords nil
@@ -347,18 +352,14 @@
 ;; ********************************************************
 ;; Custom
 ;; --------------------------------------------------------
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("a37d20710ab581792b7c9f8a075fcbb775d4ffa6c8bce9137c84951b1b453016" default)))
  '(package-selected-packages
    (quote
-    (flycheck-rtags auto-complete elpy use-package hc-zenburn-theme smex visual-regexp flycheck yasnippet seq dash ace-window))))
+    (visual-regexp use-package smex hc-zenburn-theme flycheck-rtags expand-region elpy company-jedi auto-complete ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
