@@ -269,10 +269,10 @@
 ;; --------------------------------------------------------
 
 ;; Flycheck (2020-12-28)
-(use-package flycheck
-  :ensure t
-  :config
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+;(use-package flycheck
+;  :ensure t
+;  :config
+;  (add-hook 'after-init-hook #'global-flycheck-mode))
 
 ;; Key binding for finding next error
 (dolist (hook '(prog-mode-hook))
@@ -305,7 +305,7 @@
               (setq comment-start "//")
               (setq comment-end "")
               (global-company-mode)
-              (flycheck-mode t)
+              ; (flycheck-mode t)
               )))
 
 ;; Trying out irony-mode (2017-10-10)
@@ -320,7 +320,7 @@
 ;; Highlight dangerous C functions
 (add-hook 'c-mode-hook
           (lambda ()
-            (font-lock-add-keywards nil
+            (font-lock-add-keywords nil
                                     '(("\\<\\(malloc\\|calloc\\|free\\|realloc\\)\\>"
                                        . font-lock-warning-face)))))
 
