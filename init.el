@@ -4,6 +4,10 @@
 
 ;;; Code:
 
+(let ((minver "25.3.2"))
+  (when (version< emacs-version minver)
+    (error "Your Emacs is too olds - this config requires v%d or higher" minver)))
+
 ;; ********************************************************
 ;; Packages
 ;; --------------------------------------------------------
