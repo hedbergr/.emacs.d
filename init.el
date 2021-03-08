@@ -14,8 +14,8 @@
 
 ;; Use more package-archives (M-x list-packages)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/")
-			 ("marmalade" . "https://marmalade-repo.org/packages/")
-			 ("melpa" . "https://melpa.org/packages/")))
+       ("marmalade" . "https://marmalade-repo.org/packages/")
+       ("melpa" . "https://melpa.org/packages/")))
 
 ;; Tell Emacs where to look for packages
 (let ((default-directoy "~/.emacs.d/custom-packages/"))
@@ -107,12 +107,12 @@
 ;; Avy mode
 ;; Jump anywhere on screen in four keystrokes or less.
 (use-package avy
-	 :ensure t
-	 :bind (("C-j" . avy-goto-word-or-subword-1)
-		("C-M-j" . avy-goto-char)
-		("C-M-l" . avy-goto-char))
-	 :config
-	 (setq avy-background t))
+   :ensure t
+   :bind (("C-j" . avy-goto-word-or-subword-1)
+    ("C-M-j" . avy-goto-char)
+    ("C-M-l" . avy-goto-char))
+   :config
+   (setq avy-background t))
 
 ;; Ace window
 ;; Select which window to switch to, rather than shuffling through them all
@@ -241,7 +241,7 @@
   :ensure t
   :bind (("M-x" . smex)
          ("M-X" . execute-extended-command)))
-  
+
 ;; Uniquify buffernames
 ;; Give better names to buffers of same name
 (use-package uniquify)
@@ -314,6 +314,17 @@
 (use-package  yasnippet
   :ensure t)
   ;:config (yas-global-mode 1))
+
+
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (XXX-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp)
 
 ;; ********************************************************
 ;; C
