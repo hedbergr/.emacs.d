@@ -17,9 +17,8 @@
        ("marmalade" . "https://marmalade-repo.org/packages/")
        ("melpa" . "https://melpa.org/packages/")))
 
-;; Tell Emacs where to look for packages
-(let ((default-directoy "~/.emacs.d/custom-packages/"))
-  (normal-top-level-add-subdirs-to-load-path))
+(unless (file-exists-p "~/.emacs.d/elpa/")
+  (make-directory "~/.emacs.d/elpa/"))
 
 (let ((default-directory "~/.emacs.d/elpa/"))
   (normal-top-level-add-subdirs-to-load-path))
